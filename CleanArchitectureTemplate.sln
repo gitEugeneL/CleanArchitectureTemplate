@@ -9,6 +9,10 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{AB82F5D4-02F7-493C-ACED-5C271AB05E6B}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{D126D044-ED65-473A-B6E5-24D860B869ED}"
+	ProjectSection(SolutionItems) = preProject
+		Makefile = Makefile
+		docker-compose.yml = docker-compose.yml
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Domain", "Core\Domain\Domain.csproj", "{15B4A0CC-DC46-499A-92DA-D2B84A96102C}"
 EndProject

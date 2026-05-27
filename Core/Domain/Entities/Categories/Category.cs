@@ -14,8 +14,8 @@ public class Category : BaseEntity
         Name = name;
         Description = description;
     }
-    
-    public string Name { get; private set;}
+
+    public string Name { get; private set; } = null!;
     public string? Description { get; private set;}
     
     /*** Relations ***/
