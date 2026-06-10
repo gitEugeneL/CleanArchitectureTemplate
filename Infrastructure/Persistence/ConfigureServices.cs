@@ -20,16 +20,8 @@ public static class ConfigureServices
         
         /*** Repositories ***/
         services.AddScoped<ICategoryRepository, CategoryRepository>();
-        services.AddScoped<IListingRepository, ListingRepository>();
+        services.AddScoped<IListingRepository, IListingRepository>();
         
         return services;
-    }
-
-    public static void InitializeDevDatabase(IServiceProvider serviceProvider)
-    {
-        using var scope = serviceProvider.CreateScope();
-        var dataContext = scope.ServiceProvider.GetRequiredService<DataContext>();
-        dataContext.Database.Migrate();
-        DataGenerator.Seed(dataContext);
     }
 }

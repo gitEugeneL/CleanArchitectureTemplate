@@ -1,6 +1,6 @@
 using Application;
 using Persistence;
-using ConfigureServices = Persistence.ConfigureServices;
+using Persistence.Configuration;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,6 +11,6 @@ builder.Services.AddApplicationServices();
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
-    ConfigureServices.InitializeDevDatabase(app.Services);
+    DevInitializer.Initialize(app.Services);
 
 app.Run();
