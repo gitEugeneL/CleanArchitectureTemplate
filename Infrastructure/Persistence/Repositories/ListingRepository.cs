@@ -1,5 +1,6 @@
 using Domain.Abstractions.Repositories;
 using Domain.Entities.Listings;
+using Microsoft.EntityFrameworkCore;
 
 namespace Persistence.Repositories;
 
@@ -10,9 +11,12 @@ internal class ListingRepository(DataContext dataContext) : IListingRepository
         throw new NotImplementedException();
     }
 
-    public Task<Listing?> GetByIdAsync(Guid listingId, CancellationToken ct)
+    public async Task<Listing?> GetByIdAsync(Guid listingId, CancellationToken ct)
     {
-        throw new NotImplementedException();
+        return await dataContext
+            .Listings
+            .AsNoTracking()
+            .FirstOrDefaultAsync(l => l.Id == listingId, ct);
     }
 
     public Task<(IReadOnlyList<Listing> List, int Count)> GetAllByCategoryIdAsync(

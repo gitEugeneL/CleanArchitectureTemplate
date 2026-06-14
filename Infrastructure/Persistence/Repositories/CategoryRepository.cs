@@ -1,5 +1,6 @@
 using Domain.Abstractions.Repositories;
 using Domain.Entities.Categories;
+using Microsoft.EntityFrameworkCore;
 
 namespace Persistence.Repositories;
 
@@ -20,8 +21,12 @@ internal class CategoryRepository(DataContext dataContext) : ICategoryRepository
         throw new NotImplementedException();
     }
 
-    public Task<IReadOnlyList<Category>> GetAllAsync(CancellationToken ct)
+    public async Task<IReadOnlyList<Category>> GetAllAsync(CancellationToken ct)
     {
-        throw new NotImplementedException();
+        return await dataContext
+            .Categories
+            .AsNoTracking()
+            .OrderBy(category => category.Name)
+            .ToListAsync(ct);
     }
 }
