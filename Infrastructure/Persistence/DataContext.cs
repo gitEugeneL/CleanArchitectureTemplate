@@ -11,7 +11,7 @@ internal sealed class DataContext(DbContextOptions<DataContext> options) : DbCon
     public DbSet<Listing> Listings { get; init; }
     public DbSet<Category> Categories { get; init; }
 
-    public override Task<int> SaveChangesAsync(bool acceptAllChangesOnSuccess, CancellationToken ct = default)
+    public override Task<int> SaveChangesAsync(CancellationToken ct = default)
     {
         foreach (var entry in ChangeTracker.Entries<BaseEntity>())
         {

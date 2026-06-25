@@ -20,7 +20,7 @@ public static class ConfigureServices
         
         /*** Repositories ***/
         services.AddScoped<ICategoryRepository, CategoryRepository>();
-        services.AddScoped<IListingRepository, IListingRepository>();
+        services.AddScoped<IListingRepository, ListingRepository>();
         
         return services;
     }
