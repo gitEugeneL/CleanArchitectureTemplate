@@ -11,9 +11,11 @@ internal class CategoryRepository(DataContext dataContext) : ICategoryRepository
         throw new NotImplementedException();
     }
 
-    public Task<bool> ExistsByIdAsync(Guid categoryId, CancellationToken ct)
+    public async Task<bool> ExistsByIdAsync(Guid categoryId, CancellationToken ct)
     {
-        throw new NotImplementedException();
+        return await dataContext
+            .Categories
+            .AnyAsync(c => c.Id == categoryId, ct);
     }
 
     public Task<Category?> GetByIdAsync(Guid categoryId, CancellationToken ct)

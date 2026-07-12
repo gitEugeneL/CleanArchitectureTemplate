@@ -6,9 +6,12 @@ namespace Persistence.Repositories;
 
 internal class ListingRepository(DataContext dataContext) : IListingRepository
 {
-    public Task<Listing> AddAsync(Listing listing, CancellationToken ct)
+    public async Task<Listing> AddAsync(Listing listing, CancellationToken ct)
     {
-        throw new NotImplementedException();
+        await dataContext
+            .Listings
+            .AddAsync(listing, ct);
+        return listing;
     }
 
     public async Task<Listing?> GetByIdAsync(Guid listingId, CancellationToken ct)
