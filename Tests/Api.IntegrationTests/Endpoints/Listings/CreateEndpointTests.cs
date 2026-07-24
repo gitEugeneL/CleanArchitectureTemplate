@@ -7,7 +7,7 @@ using Domain.Exceptions.Category;
 
 namespace Api.IntegrationTests.Endpoints.Listings;
 
-public class CreateTests(ApplicationFactory factory) : IntegrationTestBase(factory)
+public class CreateEndpointTests(ApplicationFactory factory) : IntegrationTestBase(factory)
 {
     [Theory]
     [ClassData(typeof(ListingsData))]
