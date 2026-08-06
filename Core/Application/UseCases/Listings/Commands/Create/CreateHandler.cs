@@ -1,3 +1,5 @@
+using Application.Abstractions.Cache;
+using Application.UseCases.Categories;
 using Domain.Abstractions;
 using Domain.Abstractions.Repositories;
 using Domain.Exceptions.Category;
@@ -9,6 +11,7 @@ namespace Application.UseCases.Listings.Commands.Create;
 internal class CreateHandler(
     ICategoryRepository categoryRepository,
     IListingRepository listingRepository,
+    ICacheService cacheService,
     IUnitOfWork unitOfWork,
     IValidator<CreateCommand> validator
 ) : IRequestHandler<CreateCommand, ListingResponse>
@@ -17,16 +20,18 @@ internal class CreateHandler(
     {
         await validator.ValidateAndThrowAsync(command, ct);
         
-        // TODO Check if category exists (cache service)
+        var cachedCategories = await cacheService.GetAsync<IReadOnlyList<CategoryResponse>>(CacheKeys.CategoriesAll);
         
-        var categoryExists = await categoryRepository.ExistsByIdAsync(command.CategoryId, ct);
+        var categoryExists = cachedCategories?.Any(c => c.CategoryId == command.CategoryId)
+                             ?? await categoryRepository.ExistsByIdAsync(command.CategoryId, ct);
+
         if (!categoryExists)
             throw new CategoryNotFoundException(command.CategoryId);
 
         var listing = await listingRepository.AddAsync(command.ToListing(), ct);
         await unitOfWork.SaveChangesAsync(ct);
-        
-        // TODO clear listings cache
+
+        await cacheService.RemoveByPrefixAsync(CacheKeys.ListingsByCategoryId(command.CategoryId));
         
         return listing.ToListingResponse();
     }

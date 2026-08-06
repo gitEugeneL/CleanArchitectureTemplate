@@ -1,3 +1,4 @@
+using Application.Abstractions.Cache;
 using Application.UseCases.Common;
 using Domain.Abstractions.Repositories;
 using FluentValidation;
@@ -7,16 +8,20 @@ namespace Application.UseCases.Listings.Queries.GetAllByCategoryId;
 
 internal class GetAllByCategoryIdHandler(
     IListingRepository listingRepository,
-    IValidator<GetAllByCategoryIdQuery> validator
+    IValidator<GetAllByCategoryIdQuery> validator,
+    ICacheService cacheService
 ) : IRequestHandler<GetAllByCategoryIdQuery, PaginationResult<ListingResponse>>
 {
     public async Task<PaginationResult<ListingResponse>> Handle(GetAllByCategoryIdQuery query, CancellationToken ct)
     {
         await validator.ValidateAndThrowAsync(query, ct);
         
-        // TODO check cache
+        var cacheKey = CacheKeys.ListingByCategoryIdPaginated(query.CategoryId, query.PageNumber, query.PageSize);
         
-        // TODO check bd
+        var cachedResult = await cacheService.GetAsync<PaginationResult<ListingResponse>>(cacheKey);
+        if (cachedResult is not null)
+            return cachedResult;
+        
         var (listings, count) = await listingRepository
             .GetAllByCategoryIdAsync(query.CategoryId, query.PageNumber, query.PageSize, ct);
 
@@ -29,7 +34,7 @@ internal class GetAllByCategoryIdHandler(
             query.PageSize
         );
         
-        // TODO add to cache
+        await cacheService.SetAsync(cacheKey, response);
         
         return response;
     }

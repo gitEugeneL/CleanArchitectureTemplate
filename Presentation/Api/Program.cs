@@ -1,14 +1,15 @@
 using Api;
 using Api.Extensions;
 using Application;
+using CacheService;
 using Persistence;
-using Persistence.Configuration;
 using Scalar.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddApplicationServices();
 builder.Services.AddPersistenceService(builder.Configuration);
+builder.Services.AddCacheServices(builder.Configuration);
 builder.Services.AddApiServices();
 
 var app = builder.Build();

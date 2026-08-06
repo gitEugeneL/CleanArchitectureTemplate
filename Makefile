@@ -1,12 +1,12 @@
 # Docker compose
 
-db-up:
+up:
 	docker compose up -d --build
 	
-db-down:
+down:
 	docker compose down
 	
-db-down-and-clean:
+down-and-clean:
 	docker compose down -v
 	
 # Database migrations

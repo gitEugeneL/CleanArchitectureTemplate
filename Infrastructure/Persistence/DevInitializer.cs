@@ -1,7 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Persistence.Configuration;
+namespace Persistence;
 
 public static class DevInitializer
 {

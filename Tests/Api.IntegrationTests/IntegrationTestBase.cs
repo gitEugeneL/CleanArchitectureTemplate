@@ -9,7 +9,7 @@ public class IntegrationTestBase(ApplicationFactory factory) : IAsyncLifetime
     public async Task InitializeAsync()
     {
         await Factory.ResetDatabaseAsync();
-        // await Factory.ResetCacheAsync();
+        await Factory.ResetCacheAsync();
     }
 
     public Task DisposeAsync()

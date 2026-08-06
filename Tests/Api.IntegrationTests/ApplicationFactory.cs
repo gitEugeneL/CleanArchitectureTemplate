@@ -3,9 +3,11 @@ using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Npgsql;
 using Persistence;
 using Respawn;
+using StackExchange.Redis;
 using Testcontainers.PostgreSql;
 using Testcontainers.Redis;
 
@@ -63,11 +65,24 @@ public class ApplicationFactory : WebApplicationFactory<Program>, IAsyncLifetime
 
         builder.ConfigureAppConfiguration((_, cfg) =>
             cfg.AddInMemoryCollection([
-                new KeyValuePair<string, string?>("ConnectionStrings:PSQL", _dbContainer.GetConnectionString())
-                // TODO redis connection string
+                new KeyValuePair<string, string?>("ConnectionStrings:PSQL", _dbContainer.GetConnectionString()),
+                new KeyValuePair<string, string?>("ConnectionStrings:Redis", _redisContainer.GetConnectionString()),
             ]));
-        
-        // TODO add Redis configuration
+
+        builder.ConfigureServices((context, services) =>
+        {
+            services.RemoveAll<IConnectionMultiplexer>();
+
+            services.AddSingleton<IConnectionMultiplexer>(_ =>
+            {
+                var options = ConfigurationOptions.Parse(context.Configuration.GetConnectionString("Redis")!);
+                
+                options.AllowAdmin = true;
+
+                return ConnectionMultiplexer.Connect(options);
+            });
+
+        });
     }
 
     public async Task ResetDatabaseAsync()
@@ -75,11 +90,18 @@ public class ApplicationFactory : WebApplicationFactory<Program>, IAsyncLifetime
         await _respawner.ResetAsync(_dbConnection);
     }
     
-    // TODO ResetRedisAsync
-    // public async Task ResetCacheAsync()
-    // {
-    //     throw new NotImplementedException();
-    // }
+    public async Task ResetCacheAsync()
+    {
+        using var scope = Services.CreateScope();
+
+        var redis = scope.ServiceProvider.GetRequiredService<IConnectionMultiplexer>();
+
+        foreach (var endpoint in  redis.GetEndPoints())
+        {
+            var server = redis.GetServer(endpoint);
+            await server.FlushAllDatabasesAsync();
+        }
+    }
 
     public async Task<TEntity[]> SeedEntity<TEntity>(params TEntity[] entities) where TEntity : class
     {
