@@ -1,4 +1,5 @@
 using Application.Abstractions.Cache;
+using Application.Abstractions.Jobs;
 using Application.UseCases.Categories;
 using Domain.Abstractions;
 using Domain.Abstractions.Repositories;
@@ -8,10 +9,11 @@ using MediatR;
 
 namespace Application.UseCases.Listings.Commands.Create;
 
-internal class CreateHandler(
+internal sealed class CreateHandler(
     ICategoryRepository categoryRepository,
     IListingRepository listingRepository,
     ICacheService cacheService,
+    IJobService jobService,
     IUnitOfWork unitOfWork,
     IValidator<CreateCommand> validator
 ) : IRequestHandler<CreateCommand, ListingResponse>
@@ -32,6 +34,8 @@ internal class CreateHandler(
         await unitOfWork.SaveChangesAsync(ct);
 
         await cacheService.RemoveByPrefixAsync(CacheKeys.ListingsByCategoryId(command.CategoryId));
+
+        await jobService.ScheduleListingExpirationJob(listing.Id, TimeSpan.FromMinutes(1));
         
         return listing.ToListingResponse();
     }

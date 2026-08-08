@@ -22,6 +22,13 @@ internal class ListingRepository(DataContext dataContext) : IListingRepository
             .FirstOrDefaultAsync(l => l.Id == listingId, ct);
     }
 
+    public async Task<Listing?> GetByIdWithTrackingAsync(Guid listingId, CancellationToken ct)
+    {
+        return await dataContext
+            .Listings
+            .FirstOrDefaultAsync(l => l.Id == listingId, ct);
+    }
+
     public async Task<(IReadOnlyList<Listing> List, int Count)> GetAllByCategoryIdAsync(
         Guid categoryId, 
         int pageNumber = 1, 

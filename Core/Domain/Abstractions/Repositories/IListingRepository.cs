@@ -8,6 +8,8 @@ public interface IListingRepository
     
     Task<Listing?> GetByIdAsync(Guid listingId, CancellationToken ct);
     
+    Task<Listing?> GetByIdWithTrackingAsync(Guid listingId, CancellationToken ct);
+    
     Task<(IReadOnlyList<Listing> List, int Count)> GetAllByCategoryIdAsync(
         Guid categoryId, 
         int pageNumber, 
