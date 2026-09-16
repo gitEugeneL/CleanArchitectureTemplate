@@ -37,7 +37,7 @@ This repository is built step YouTube series on Clean Architecture with ASP.NET 
 | 7 | [Pagination in CQRS Queries from Minimal API to Integration Tests](https://www.youtube.com/watch?v=SdqnpmWT93k&list=PLl71qo2x5aNKfQL5K_sp67BVbcotAlsSd&index=7) |
 | 8 | [Implementing Redis for Caching](https://www.youtube.com/watch?v=Ul2EXvc1R28&list=PLl71qo2x5aNKfQL5K_sp67BVbcotAlsSd&index=8)                                   |
 | 9 | [Implementing Hangfire and Redis for Background Jobs](https://www.youtube.com/watch?v=80JqqF1yCrw&list=PLl71qo2x5aNKfQL5K_sp67BVbcotAlsSd&index=9)              |
-| 10 | [ASP.NET Core Clean Architecture full course]()                                                                                                                 |
+| 10 | [ASP.NET Core Clean Architecture full course](https://www.youtube.com/watch?v=QzRE4TpeuVg&themeRefresh=1)                                                                                                                 |
 
 ## Tech stack
 
